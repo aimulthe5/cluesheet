@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluedo Ultimate Tracker</title>
+    <style>
+        :root { --gold: #d4af37; --glass: rgba(0, 0, 0, 0.85); --blood: #8b0000; }
+        
+        body { 
+            font-family: 'Georgia', serif; margin: 0; padding: 15px; min-height: 100vh;
+            background-color: #1a1a1a; overflow-x: hidden;
+        }
+
+        #bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; background-size: cover; background-position: center;
+            transition: filter 0.3s ease;
+        }
+
+        .container { max-width: 900px; margin: auto; transition: filter 0.3s ease; }
+        
+        /* Secret Mode Blur */
+        .secret-blur { filter: blur(40px) grayscale(1) !important; pointer-events: none !important; opacity: 0.2; }
+
+        .controls { 
+            background: var(--glass); padding: 15px; border-radius: 10px; 
+            margin-bottom: 15px; border: 1px solid var(--gold); color: white;
+        }
+        .control-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+        input[type="text"], input[type="file"] { background: rgba(255,255,255,0.1); border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; }
+        
+        .setup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
+        .setup input { background: var(--glass); border: 1px solid #444; color: white; padding: 8px; text-align: center; border-radius: 4px; font-size: 0.8em; }
+
+        table { 
+            width: 100%; border-collapse: collapse; margin-bottom: 25px; 
+            background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; 
+        }
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px 2px; text-align: center; color: white; }
+        .name-col { width: 32%; text-align: left; padding-left: 12px; font-weight: bold; color: var(--gold); font-size: 0.9em; }
+        .cell { cursor: pointer; user-select: none; font-weight: bold; font-size: 1.2em; }
+        
+        .state-x { color: #ff4d4d; }
+        .state-maybe { color: var(--gold); }
+        .state-check { color: #00ff88; }
+
+        .section-header { 
+            background: rgba(139, 0, 0, 0.9); color: var(--gold); 
+            padding: 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold);
+        }
+
+        .action-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .btn { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8em; }
+        .btn-win { background: #28a745; color: white; border: 2px solid #00ff88; }
+        .btn-lose { background: var(--blood); color: white; border: 2px solid #ff4d4d; }
+        .btn-file { background: #444; color: var(--gold); border: 1px solid var(--gold); }
+        
+        /* Overlays */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100; text-align: center; background: black;
+        }
+        #win-screen { border: 10px double var(--gold); }
+        #kill-screen h1 { color: #ff0000; font-size: 4em; font-family: 'Courier New', monospace; }
+        .blood-drip { color: #ff0000; font-size: 2em; animation: drip 2s infinite; }
+        @keyframes drip { 0% { transform: translateY(-20px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(100px); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+<div id="bg-layer"></div>
+
+<div id="win-screen" class="overlay">
+    <h1 style="color:var(--gold); font-size:3em;">CASE CLOSED</h1>
+    <button class="btn" style="background:var(--gold);" onclick="closeOverlay('win-screen')">Return to Board</button>
+</div>
+
+<div id="kill-screen" class="overlay">
+    <div class="blood-drip">🩸</div>
+    <h1>YOU'RE NEXT</h1>
+    <button class="btn" style="background:#222; color:red; border:1px solid red;" onclick="closeOverlay('kill-screen')">Return to Board</button>
+</div>
+
+<div class="container" id="main-content">
+    <div class="controls">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <strong style="color:var(--gold)">DETECTIVE LOG</strong>
+            <button class="btn" style="background:#333; color:white; padding:10px 20px; border:1px solid #666;" 
+                onmousedown="toggleSecret(true)" onmouseup="toggleSecret(false)" onmouseleave="toggleSecret(false)"
+                ontouchstart="toggleSecret(true)" ontouchend="toggleSecret(false)" ontouchcancel="toggleSecret(false)">
+                HOLD TO HIDE NOTES
+            </button>
+        </div>
+        
+        <div class="control-row">
+            <label>Atmosphere (Blur):</label>
+            <input type="range" id="blur-slider" min="0" max="25" value="0" oninput="updateBlur(this.value)">
+            <input type="file" id="local-bg" accept="image/*" style="display:none;" onchange="uploadBg(this)">
+            <button class="btn btn-file" onclick="document.getElementById('local-bg').click()">Browse Local Image</button>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn btn-win" onclick="showOverlay('win-screen')">SOLVE ✔</button>
+            <button class="btn btn-lose" onclick="showOverlay('kill-screen')">ELIMINATED 💀</button>
+        </div>
+    </div>
+
+    <div class="setup">
+        <input type="text" id="p1" placeholder="P1" oninput="syncNames()">
+        <input type="text" id="p2" placeholder="P2" oninput="syncNames()">
+        <input type="text" id="p3" placeholder="P3" oninput="syncNames()">
+        <input type="text" id="p4" placeholder="P4" oninput="syncNames()">
+        <input type="text" id="p5" placeholder="P5" oninput="syncNames()">
+        <input type="text" id="p6" placeholder="P6" oninput="syncNames()">
+    </div>
+
+    <div id="sheet">
+        <div class="section-header">WHO</div>
+        <table id="table-who"><thead><tr><th class="name-col">Identity</th><th class="h-p1">P1</th><th class="h-p2">P2</th><th class="h-p3">P3</th><th class="h-p4">P4</th><th class="h-p5">P5</th><th class="h-p6">P6</th><th>File</th></tr></thead><tbody id="body-who"></tbody></table>
+        <div class="section-header">WHAT</div>
+        <table id="table-what"><tbody id="body-what"></tbody></table>
+        <div class="section-header">WHERE</div>
+        <table id="table-where"><tbody id="body-where"></tbody></table>
+    </div>
+
+    <button class="btn" style="width:100%; background:#444; color:white;" onclick="if(confirm('Reset game?')) { localStorage.clear(); location.reload(); }">NEW GAME (RESET)</button>
+</div>
+
+<script>
+    const data = {
+        who: ["Miss Scarlett", "Col. Mustard", "Dr. Orchid", "Rev. Green", "Mrs. Peacock", "Prof. Plum"],
+        what: ["Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Spanner"],
+        where: ["Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"]
+    };
+
+    function showOverlay(id) { document.getElementById(id).style.display = 'flex'; }
+    function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
+
+    function uploadBg(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = e.target.result;
+                document.getElementById('bg-layer').style.backgroundImage = `url('${img}')`;
+                try { localStorage.setItem('customBg', img); } catch(e) { alert("File too large for memory!"); }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function updateBlur(val) {
+        document.getElementById('bg-layer').style.filter = `blur(${val}px)`;
+        localStorage.setItem('bgBlur', val);
+    }
+
+    function toggleSecret(isOn) {
+        const content = document.getElementById('main-content');
+        isOn ? content.classList.add('secret-blur') : content.classList.remove('secret-blur');
+    }
+
+    function syncNames() {
+        for(let i=1; i<=6; i++) {
+            const name = document.getElementById(`p${i}`).value;
+            document.querySelectorAll(`.h-p${i}`).forEach(el => el.innerText = name || `P${i}`);
+            localStorage.setItem(`p${i}name`, name);
+        }
+    }
+
+    function buildRows(list, bodyId) {
+        const body = document.getElementById(bodyId);
+        list.forEach((item, rowIdx) => {
+            const tr = document.createElement('tr');
+            let html = `<td class="name-col">${item}</td>`;
+            for(let colIdx=1; colIdx<=7; colIdx++) {
+                const id = `${bodyId}-${rowIdx}-${colIdx}`;
+                const saved = localStorage.getItem(id) || '-';
+                html += `<td id="${id}" class="cell ${getStateClass(saved)}" onclick="toggle(this)">${saved}</td>`;
+            }
+            tr.innerHTML = html;
+            body.appendChild(tr);
+        });
+    }
+
+    function getStateClass(text) {
+        return text === 'X' ? 'state-x' : text === '?' ? 'state-maybe' : text === '✔' ? 'state-check' : 'state-none';
+    }
+
+    function toggle(el) {
+        const states = ['-', 'X', '?', '✔'];
+        let nextIdx = (states.indexOf(el.innerText) + 1) % states.length;
+        el.innerText = states[nextIdx];
+        el.className = `cell ${getStateClass(states[nextIdx])}`;
+        localStorage.setItem(el.id, states[nextIdx]);
+    }
+
+    buildRows(data.who, 'body-who');
+    buildRows(data.what, 'body-what');
+    buildRows(data.where, 'body-where');
+
+    const savedBg = localStorage.getItem('customBg');
+    if(savedBg) document.getElementById('bg-layer').style.backgroundImage = `url('${savedBg}')`;
+
+    const savedBlur = localStorage.getItem('bgBlur') || 0;
+    document.getElementById('blur-slider').value = savedBlur;
+    updateBlur(savedBlur);
+
+    for(let i=1; i<=6; i++) {
+        const sn = localStorage.getItem(`p${i}name`);
+        if(sn) document.getElementById(`p${i}`).value = sn;
+    }
+    syncNames();
+</script>
+</body>
+</html>
