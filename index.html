@@ -7,23 +7,19 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️‍♂️</text></svg>">
     
     <style>
-        /* --- 1. VARIABLES --- */
         :root { 
             --gold: #d4af37; --glass: rgba(0, 0, 0, 0.9); --blood: #8b0000;
             --bg-dark: #1a1a1a; --border-soft: rgba(255,255,255,0.08);
             --desktop-max: 800px;
         }
         
-        /* --- 2. BASE STYLES --- */
         body { font-family: 'Georgia', serif; margin: 0; background: var(--bg-dark); color: #eee; min-height: 100dvh; overflow-x: hidden; }
         #bg-layer { position: fixed; inset: 0; z-index: -1; background-size: cover; background-position: center; transition: filter 0.3s; }
 
-        /* --- 3. LAYOUT --- */
         #ui-fixed-header { position: sticky; top: 0; z-index: 999; background: var(--glass); border-bottom: 1px solid var(--gold); padding: 10px; }
         .content-frame { width: 100%; max-width: 100%; margin: auto; transition: 0.4s; }
-        @media (min-width: 800px) { .content-frame { max-width: var(--desktop-max); border-inline: 1px solid #333; box-shadow: 0 0 50px #000; } }
+        @media (min-width: 800px) { .content-frame { max-width: var(--desktop-max); border-inline: 1px solid #333; } }
 
-        /* --- 4. COMPONENTS --- */
         .secret-blur { filter: blur(50px) grayscale(1) !important; opacity: 0 !important; pointer-events: none !important; }
         .flex-bet { display: flex; justify-content: space-between; align-items: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
@@ -32,7 +28,6 @@
         .btn-win { background: #28a745; color: #fff; }
         .btn-lose { background: var(--blood); color: #fff; }
 
-        /* --- 5. THE TRACKER GRID --- */
         .setup-bar { display: grid; grid-template-columns: 30% repeat(6, 10%) 10%; background: #000; }
         .setup-bar input { background: transparent; border: none; border-left: 1px solid #333; color: var(--gold); padding: 12px 0; text-align: center; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; outline: none; }
         
@@ -40,14 +35,14 @@
         td, th { border: 1px solid var(--border-soft); padding: 15px 0; text-align: center; }
         .name-col { width: 30%; text-align: left; padding-left: 10px; color: var(--gold); font-size: 0.75rem; font-weight: bold; }
         
-        /* Cell States */
         .cell { cursor: pointer; font-weight: bold; font-size: 1.1rem; }
         .state-x { color: #ff4d4d; } .state-maybe { color: var(--gold); } .state-check { color: #00ff88; }
 
         .section-hdr { background: linear-gradient(to right, var(--blood), #200); color: var(--gold); padding: 8px 10px; font-size: 0.75rem; border-block: 1px solid var(--gold); text-transform: uppercase; }
         
-        /* --- 6. UTILS --- */
-        .overlay { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(20px); background: rgba(0,0,0,0.8); }
+        .overlay { position: fixed; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); background: rgba(0,0,0,0.85); text-align: center; padding: 20px; box-sizing: border-box;}
+        .overlay p { color: #bbb; margin: 20px 0; max-width: 300px; line-height: 1.4; }
+        
         .switch { width: 40px; height: 20px; position: relative; }
         .switch input { opacity: 0; }
         .slider { position: absolute; inset: 0; background: #333; border-radius: 20px; border: 1px solid var(--gold); cursor: pointer; }
@@ -63,14 +58,17 @@
     <div class="content-frame">
         <div class="flex-bet">
             <strong style="color:var(--gold); font-size: 0.8rem;">INVESTIGATOR HUD</strong>
-            <label class="switch">
-                <input type="checkbox" id="secret-toggle" onchange="toggleSecret(this.checked)">
-                <span class="slider"></span>
-            </label>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 0.55rem; color: #888; letter-spacing: 1px;">STEALTH MODE</span>
+                <label class="switch">
+                    <input type="checkbox" id="secret-toggle" onchange="toggleSecret(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </div>
         <div class="grid-2">
             <button class="btn btn-win" onclick="endGame('win')">SOLVE ✔</button>
-            <button class="btn btn-lose" onclick="endGame('kill')">GUESS WRONG 💀</button>
+            <button class="btn btn-lose" onclick="endGame('kill')">ELIMINATED 💀</button>
         </div>
         <div class="flex-bet" style="gap:10px;">
             <input type="range" id="blur-slider" min="0" max="25" value="0" style="flex-grow:1" oninput="updateBlur(this.value)">
@@ -81,19 +79,21 @@
 </div>
 
 <div id="win-screen" class="overlay">
-    <h1 style="color:var(--gold); font-size:2rem;">CASE CLOSED</h1>
-    <button class="btn" style="background:var(--gold); color:#000; width:150px; margin-top:20px;" onclick="closeOverlays()">RETURN</button>
+    <h1 style="color:var(--gold); font-size:2rem; margin:0;">CASE CLOSED</h1>
+    <p id="win-msg"></p>
+    <button class="btn" style="background:var(--gold); color:#000; width:160px;" onclick="closeOverlays()">RETURN</button>
 </div>
 
 <div id="kill-screen" class="overlay">
-    <h1 style="color:#ff0000; font-size:2.5rem; font-family:monospace;">ELIMINATED</h1>
-    <button class="btn" style="background:#222; color:red; border:1px solid red; width:150px; margin-top:20px;" onclick="closeOverlays()">RESURRECT</button>
+    <h1 style="color:#ff0000; font-size:2.5rem; font-family:monospace; margin:0;">YOU'RE NEXT</h1>
+    <p id="kill-msg"></p>
+    <button class="btn" style="background:#222; color:red; border:1px solid red; width:160px;" onclick="closeOverlays()">RESURRECT</button>
 </div>
 
 <div class="content-frame" id="main-content">
     <div class="setup-bar" id="player-inputs">
         <div style="color:var(--gold); font-size: 0.55rem; align-self: center; padding-left: 8px; font-weight: bold;">PLAYER ID</div>
-        </div>
+    </div>
 
     <div id="sheet-anchor"></div>
 
@@ -102,7 +102,7 @@
     <button class="btn" style="width:calc(100% - 20px); background:transparent; color:#444; margin:10px; border:1px solid #222;" onclick="resetGame()">WIPE ALL EVIDENCE</button>
 
     <footer style="text-align: center; padding: 20px; color: #444; font-size: 0.6rem;">
-        CLUEDO TRACKER v3.0.0 | © 2026
+        CLUEDO TRACKER v3.0.1 | © 2026
     </footer>
 </div>
 
@@ -111,10 +111,11 @@
         who: ["Miss Scarlett", "Col. Mustard", "Dr. Orchid", "Rev. Green", "Mrs. Peacock", "Prof. Plum"],
         what: ["Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench"],
         where: ["Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"],
-        states: ['-', 'X', '?', '✔']
+        states: ['-', 'X', '?', '✔'],
+        winMsgs: ["Brilliant deduction!", "The truth has been revealed.", "Case closed.", "Justice is served."],
+        killMsgs: ["A fatal mistake.", "You are next.", "Silence follows you.", "Wrong guess."]
     };
 
-    // --- HELPER FUNCTIONS ---
     const get = (key) => localStorage.getItem(key);
     const save = (key, val) => localStorage.setItem(key, val);
 
@@ -143,18 +144,15 @@
         save(el.id, el.innerText);
     }
 
-    // --- UI GENERATORS ---
     function init() {
         const anchor = document.getElementById('sheet-anchor');
         const inputArea = document.getElementById('player-inputs');
 
-        // Build Player Inputs
         for(let i=1; i<=6; i++) {
             inputArea.innerHTML += `<input type="text" id="p${i}" placeholder="P${i}" maxlength="3" oninput="syncNames()">`;
         }
         inputArea.innerHTML += `<div style="background:rgba(255,255,255,0.05); border-left:1px solid #333;"></div>`;
 
-        // Build Tables
         ['who', 'what', 'where'].forEach(cat => {
             let html = `<div class="section-hdr">${cat}</div><table id="t-${cat}"><thead><tr><th class="name-col">IDENTITY</th>`;
             for(let i=1; i<=6; i++) html += `<th class="h-p${i}" style="width:10%; font-size:0.55rem; color:#888;">P${i}</th>`;
@@ -172,25 +170,20 @@
             });
             anchor.innerHTML += html + `</tbody></table>`;
         });
-
         loadSavedData();
     }
 
     function loadSavedData() {
         const bg = get('customBg');
         if(bg) document.getElementById('bg-layer').style.backgroundImage = `url('${bg}')`;
-        
         const blur = get('bgBlur') || 0;
         document.getElementById('blur-slider').value = blur;
         updateBlur(blur);
-
         const notes = get('turnHistory');
         if(notes) document.getElementById('turn-history').value = notes;
-
         const sec = get('secretMode') === 'true';
         document.getElementById('secret-toggle').checked = sec;
         toggleSecret(sec);
-
         for(let i=1; i<=6; i++) {
             const n = get(`p${i}name`);
             if(n) document.getElementById(`p${i}`).value = n;
@@ -209,7 +202,12 @@
         }
     }
 
-    function endGame(t) { document.getElementById(t + '-screen').style.display = 'flex'; }
+    function endGame(t) { 
+        const msgs = CONFIG[t + 'Msgs'];
+        document.getElementById(t + '-msg').innerText = msgs[Math.floor(Math.random() * msgs.length)];
+        document.getElementById(t + '-screen').style.display = 'flex'; 
+    }
+    
     function closeOverlays() { document.querySelectorAll('.overlay').forEach(o => o.style.display = 'none'); }
     function resetGame() { if(confirm('Clear all?')) { localStorage.clear(); location.reload(); } }
 
