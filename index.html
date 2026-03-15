@@ -7,7 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕵️‍♂️</text></svg>">
     
     <style>
-        :root { --gold: #d4af37; --glass: rgba(0, 0, 0, 0.85); --blood: #8b0000; }
+        :root { --gold: #d4af37; --glass: rgba(0, 0, 0, 0.9); --blood: #8b0000; }
         
         body { 
             font-family: 'Georgia', serif; margin: 0; padding: 10px; min-height: 100dvh;
@@ -20,14 +20,12 @@
             transition: filter 0.3s ease;
         }
 
-        .container { max-width: 900px; margin: auto; transition: 0.4s; }
+        .container { max-width: 600px; margin: auto; } /* Tightened for better mobile framing */
         .secret-blur { filter: blur(50px) grayscale(1) !important; opacity: 0 !important; pointer-events: none !important; }
 
-        /* HUD Controls */
         .controls { background: var(--glass); padding: 12px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--gold); }
         .secret-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         
-        /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 22px; border: 1px solid var(--gold); }
@@ -35,35 +33,50 @@
         input:checked + .slider { background-color: var(--blood); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        /* Setup Inputs - Limited to 3 chars */
-        .setup { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 15px; }
-        .setup input { background: var(--glass); border: 1px solid #444; color: var(--gold); padding: 8px 2px; text-align: center; border-radius: 4px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
+        /* FIXED SETUP GRID: 30% gap for Suspect column + 6 equal player columns */
+        .setup { 
+            display: grid; 
+            grid-template-columns: 30% repeat(6, 1fr); 
+            gap: 2px; 
+            margin-bottom: 10px; 
+            padding: 0;
+        }
+        .setup .spacer { visibility: hidden; } /* Matches the 'Identity' column space */
+        .setup input { 
+            background: var(--glass); border: 1px solid var(--gold); color: var(--gold); 
+            padding: 8px 0; text-align: center; border-radius: 4px; 
+            font-size: 0.65em; font-weight: bold; text-transform: uppercase; width: 100%;
+        }
 
         /* Unified Table Grid */
         table { 
-            width: 100%; border-collapse: collapse; margin-bottom: 20px; 
-            background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; 
-            table-layout: fixed; /* Keep all tables identical */
+            width: 100%; border-collapse: collapse; margin-bottom: 15px; 
+            background: var(--glass); border: 1px solid #444; 
+            table-layout: fixed; 
         }
         
-        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 10px 0; text-align: center; overflow: hidden; }
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px 0; text-align: center; }
         
-        .name-col { width: 30%; text-align: left; padding-left: 10px; color: var(--gold); font-size: 0.8em; font-weight: bold; }
-        .player-col { width: 8.75%; font-size: 0.7em; text-transform: uppercase; color: #ccc; }
-        .file-col { width: 12.5%; color: #777; font-size: 0.7em; }
+        .name-col { width: 30%; text-align: left; padding-left: 8px; color: var(--gold); font-size: 0.75em; font-weight: bold; }
+        .player-col { width: 11.6%; font-size: 0.6em; text-transform: uppercase; color: #aaa; }
 
         .cell { cursor: pointer; user-select: none; font-weight: bold; font-size: 1.1em; }
         .state-x { color: #ff4d4d; }
         .state-maybe { color: var(--gold); }
         .state-check { color: #00ff88; }
 
-        .section-header { background: rgba(139, 0, 0, 0.9); color: var(--gold); padding: 8px 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold); font-size: 0.8em; letter-spacing: 1px; }
+        .section-header { 
+            background: rgba(139, 0, 0, 0.9); color: var(--gold); 
+            padding: 8px 10px; font-weight: bold; text-transform: uppercase; 
+            border: 1px solid var(--gold); font-size: 0.8em; letter-spacing: 1px;
+            width: 100%; box-sizing: border-box;
+        }
         
         .btn { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.75em; }
-        .btn-win { background: #28a745; color: white; border: 2px solid #00ff88; }
-        .btn-lose { background: var(--blood); color: white; border: 2px solid #ff4d4d; }
+        .btn-win { background: #28a745; color: white; border: 1px solid #00ff88; }
+        .btn-lose { background: var(--blood); color: white; border: 1px solid #ff4d4d; }
         
-        textarea { width: 100%; height: 80px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; resize: none; font-size: 0.85em; margin-top: 10px; }
+        textarea { width: 100%; height: 60px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; resize: none; font-size: 0.85em; margin-top: 5px; }
         footer { text-align: center; padding: 20px; color: #555; font-size: 0.65em; }
 
         /* Mobile Overlays */
@@ -75,9 +88,6 @@
         }
         #win-screen { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); border: 6px double var(--gold); }
         #kill-screen { background: #000; border: 4px solid #300; }
-        #win-screen h1 { color: var(--gold); font-size: 2.2rem; text-shadow: 0 0 15px var(--gold); margin: 0; }
-        #kill-screen h1 { color: #ff0000; font-size: 2.5rem; font-family: 'Courier New', monospace; margin: 0; }
-        .overlay p { color: #bbb; font-size: 1rem; max-width: 280px; margin: 20px 0; }
         .blood-drip { color: #ff0000; font-size: 2.5rem; animation: drip 2.5s infinite; position: absolute; top: 10%; }
         @keyframes drip { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(40dvh); opacity: 0; } }
     </style>
@@ -87,19 +97,19 @@
 <div id="bg-layer"></div>
 
 <div id="win-screen" class="overlay">
-    <h1>CASE CLOSED</h1>
-    <p id="win-msg">The truth is revealed.</p>
-    <button class="btn" style="background:var(--gold); color:black; width:180px;" onclick="closeOverlay('win-screen')">RETURN</button>
+    <h1 style="color:var(--gold); font-size:2rem;">CASE CLOSED</h1>
+    <p id="win-msg" style="color:#ccc;">The truth is revealed.</p>
+    <button class="btn" style="background:var(--gold); color:black; width:160px;" onclick="closeOverlay('win-screen')">RETURN</button>
 </div>
 
 <div id="kill-screen" class="overlay">
     <div class="blood-drip">🩸</div>
-    <h1>YOU'RE NEXT</h1>
-    <p id="kill-msg">You guessed wrong.</p>
-    <button class="btn" style="background:#222; color:red; border:1px solid red; width:180px;" onclick="closeOverlay('kill-screen')">TRY AGAIN</button>
+    <h1 style="color:#ff0000; font-size:2.5rem; font-family:monospace;">YOU'RE NEXT</h1>
+    <p id="kill-msg" style="color:#ccc;">Fatal error.</p>
+    <button class="btn" style="background:#222; color:red; border:1px solid red; width:160px;" onclick="closeOverlay('kill-screen')">TRY AGAIN</button>
 </div>
 
-<div class="controls" style="max-width: 900px; margin: auto; position: relative; z-index: 10;">
+<div class="controls" style="max-width: 600px; margin: auto; position: relative; z-index: 10;">
     <div class="secret-header">
         <strong style="color:var(--gold)">DETECTIVE LOG</strong>
         <div style="display: flex; align-items: center; gap: 8px;">
@@ -112,7 +122,6 @@
     </div>
     
     <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size:0.7em; color:var(--gold)">Blur:</span>
         <input type="range" id="blur-slider" min="0" max="25" value="0" style="flex-grow:1" oninput="updateBlur(this.value)">
         <button class="btn" style="padding:8px; background:#444; color:var(--gold); border:1px solid var(--gold);" onclick="document.getElementById('local-bg').click()">🖼️</button>
         <input type="file" id="local-bg" accept="image/*" style="display:none;" onchange="uploadBg(this)">
@@ -120,13 +129,13 @@
 
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
         <button class="btn btn-win" onclick="triggerEnd('win')">SOLVE ✔</button>
-        <button class="btn btn-lose" onclick="triggerEnd('kill')">GUESSED WRONG 💀</button>
+        <button class="btn btn-lose" onclick="triggerEnd('kill')">ELIMINATED 💀</button>
     </div>
 </div>
 
 <div class="container" id="main-content">
     <div class="setup">
-        <input type="text" id="p1" placeholder="P1" maxlength="3" oninput="syncNames()">
+        <div class="spacer"></div> <input type="text" id="p1" placeholder="P1" maxlength="3" oninput="syncNames()">
         <input type="text" id="p2" placeholder="P2" maxlength="3" oninput="syncNames()">
         <input type="text" id="p3" placeholder="P3" maxlength="3" oninput="syncNames()">
         <input type="text" id="p4" placeholder="P4" maxlength="3" oninput="syncNames()">
@@ -136,18 +145,20 @@
 
     <div id="sheet">
         <div class="section-header">WHO</div>
-        <table id="table-who"><thead><tr><th class="name-col">IDENTITY</th><th class="h-p1 player-col">P1</th><th class="h-p2 player-col">P2</th><th class="h-p3 player-col">P3</th><th class="h-p4 player-col">P4</th><th class="h-p5 player-col">P5</th><th class="h-p6 player-col">P6</th><th class="file-col">FILE</th></tr></thead><tbody id="body-who"></tbody></table>
+        <table id="table-who"><thead><tr><th class="name-col">SUSPECT</th><th class="h-p1 player-col">P1</th><th class="h-p2 player-col">P2</th><th class="h-p3 player-col">P3</th><th class="h-p4 player-col">P4</th><th class="h-p5 player-col">P5</th><th class="h-p6 player-col">P6</th></tr></thead><tbody id="body-who"></tbody></table>
+        
         <div class="section-header">WHAT</div>
         <table id="table-what"><tbody id="body-what"></tbody></table>
+        
         <div class="section-header">WHERE</div>
         <table id="table-where"><tbody id="body-where"></tbody></table>
     </div>
 
-    <textarea id="turn-history" placeholder="Turn History..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
-    <button class="btn" style="width:100%; background:#222; color:#555; margin-top:10px; border:1px solid #333;" onclick="if(confirm('Wipe everything?')) { localStorage.clear(); location.reload(); }">NEW GAME</button>
+    <textarea id="turn-history" placeholder="Evidence log..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
+    <button class="btn" style="width:100%; background:#222; color:#555; margin-top:10px; border:1px solid #333;" onclick="if(confirm('Reset game?')) { localStorage.clear(); location.reload(); }">NEW GAME</button>
 
     <footer>
-        <p>CLUEDO DIGITAL TRACKER (v2.8.0)</p>
+        <p>CLUEDO DIGITAL TRACKER (v2.8.5)</p>
         <p>© 2026 | MIT LICENSE</p>
     </footer>
 </div>
@@ -159,8 +170,8 @@
         where: ["Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"]
     };
 
-    const winMsgs = ["Brilliant deduction!", "The truth is revealed.", "Case closed.", "Justice is served."];
-    const killMsgs = ["A fatal mistake.", "You are next.", "Silence follows you.", "Wrong guess."];
+    const winMsgs = ["Brilliant deduction!", "The truth is revealed.", "Case closed."];
+    const killMsgs = ["A fatal mistake.", "You are next.", "Game over."];
 
     function triggerEnd(type) {
         if(type === 'win') {
@@ -209,7 +220,7 @@
         list.forEach((item, rowIdx) => {
             const tr = document.createElement('tr');
             let html = `<td class="name-col">${item}</td>`;
-            for(let colIdx=1; colIdx<=7; colIdx++) {
+            for(let colIdx=1; colIdx<=6; colIdx++) {
                 const id = `${bodyId}-${rowIdx}-${colIdx}`;
                 const saved = localStorage.getItem(id) || '-';
                 html += `<td id="${id}" class="cell ${getStateClass(saved)}" onclick="toggle(this)">${saved}</td>`;
