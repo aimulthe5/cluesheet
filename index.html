@@ -10,7 +10,7 @@
         :root { --gold: #d4af37; --glass: rgba(0, 0, 0, 0.85); --blood: #8b0000; }
         
         body { 
-            font-family: 'Georgia', serif; margin: 0; padding: 15px; min-height: 100dvh;
+            font-family: 'Georgia', serif; margin: 0; padding: 10px; min-height: 100dvh;
             background-color: #1a1a1a; overflow-x: hidden; color: #eee;
         }
 
@@ -20,64 +20,66 @@
             transition: filter 0.3s ease;
         }
 
-        .container { max-width: 900px; margin: auto; transition: filter 0.4s ease, opacity 0.4s ease; }
+        .container { max-width: 900px; margin: auto; transition: 0.4s; }
         .secret-blur { filter: blur(50px) grayscale(1) !important; opacity: 0 !important; pointer-events: none !important; }
 
         /* HUD Controls */
-        .controls { background: var(--glass); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--gold); }
+        .controls { background: var(--glass); padding: 12px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--gold); }
         .secret-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         
         /* Toggle Switch */
-        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 24px; border: 1px solid var(--gold); }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: var(--gold); transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 22px; border: 1px solid var(--gold); }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 3px; background-color: var(--gold); transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--blood); }
-        input:checked + .slider:before { transform: translateX(24px); background-color: #fff; }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        /* Inputs */
-        .setup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
-        .setup input { background: var(--glass); border: 1px solid #444; color: white; padding: 8px; text-align: center; border-radius: 4px; font-size: 0.8em; width: 100%; box-sizing: border-box; }
+        /* Setup Inputs - Limited to 3 chars */
+        .setup { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; margin-bottom: 15px; }
+        .setup input { background: var(--glass); border: 1px solid #444; color: var(--gold); padding: 8px 2px; text-align: center; border-radius: 4px; font-size: 0.75em; font-weight: bold; text-transform: uppercase; }
 
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; }
-        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px 2px; text-align: center; }
-        .name-col { width: 32%; text-align: left; padding-left: 10px; font-weight: bold; color: var(--gold); font-size: 0.85em; }
+        /* Unified Table Grid */
+        table { 
+            width: 100%; border-collapse: collapse; margin-bottom: 20px; 
+            background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; 
+            table-layout: fixed; /* Keep all tables identical */
+        }
+        
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 10px 0; text-align: center; overflow: hidden; }
+        
+        .name-col { width: 30%; text-align: left; padding-left: 10px; color: var(--gold); font-size: 0.8em; font-weight: bold; }
+        .player-col { width: 8.75%; font-size: 0.7em; text-transform: uppercase; color: #ccc; }
+        .file-col { width: 12.5%; color: #777; font-size: 0.7em; }
+
         .cell { cursor: pointer; user-select: none; font-weight: bold; font-size: 1.1em; }
         .state-x { color: #ff4d4d; }
         .state-maybe { color: var(--gold); }
         .state-check { color: #00ff88; }
 
-        .section-header { background: rgba(139, 0, 0, 0.9); color: var(--gold); padding: 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold); font-size: 0.9em; }
-        .btn { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8em; }
+        .section-header { background: rgba(139, 0, 0, 0.9); color: var(--gold); padding: 8px 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold); font-size: 0.8em; letter-spacing: 1px; }
+        
+        .btn { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.75em; }
         .btn-win { background: #28a745; color: white; border: 2px solid #00ff88; }
         .btn-lose { background: var(--blood); color: white; border: 2px solid #ff4d4d; }
-        .btn-file { background: #444; color: var(--gold); border: 1px solid var(--gold); }
         
-        textarea { width: 100%; height: 80px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; resize: none; font-size: 0.9em; }
-        footer { text-align: center; padding: 30px; color: #666; font-size: 0.7em; letter-spacing: 1px; }
+        textarea { width: 100%; height: 80px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; resize: none; font-size: 0.85em; margin-top: 10px; }
+        footer { text-align: center; padding: 20px; color: #555; font-size: 0.65em; }
 
-        /* MOBILE OPTIMIZED OVERLAYS - FIXED FOR 100DVH */
+        /* Mobile Overlays */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 9999; text-align: center; padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
-            box-sizing: border-box; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 9999; text-align: center; padding: 20px; box-sizing: border-box;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         }
-
         #win-screen { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); border: 6px double var(--gold); }
-        #win-screen h1 { color: var(--gold); font-size: clamp(1.8rem, 8vw, 3.5rem); margin: 0 0 10px 0; text-shadow: 0 0 15px var(--gold); animation: shimmer 2s infinite; }
-        
         #kill-screen { background: #000; border: 4px solid #300; }
-        #kill-screen h1 { color: #ff0000; font-size: clamp(2.2rem, 10vw, 4rem); font-family: 'Courier New', monospace; letter-spacing: -1px; margin: 0 0 10px 0; animation: shake 0.5s infinite; }
-        
-        .overlay p { color: #bbb; font-size: clamp(0.85rem, 4vw, 1.1rem); max-width: 300px; margin: 0 0 30px 0; line-height: 1.4; }
-        .overlay .btn { min-width: 180px; padding: 18px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-
-        @keyframes shimmer { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.02); } }
-        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, 1px); } }
-        @keyframes drip { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(40dvh); opacity: 0; } }
+        #win-screen h1 { color: var(--gold); font-size: 2.2rem; text-shadow: 0 0 15px var(--gold); margin: 0; }
+        #kill-screen h1 { color: #ff0000; font-size: 2.5rem; font-family: 'Courier New', monospace; margin: 0; }
+        .overlay p { color: #bbb; font-size: 1rem; max-width: 280px; margin: 20px 0; }
         .blood-drip { color: #ff0000; font-size: 2.5rem; animation: drip 2.5s infinite; position: absolute; top: 10%; }
+        @keyframes drip { 0% { transform: translateY(-10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(40dvh); opacity: 0; } }
     </style>
 </head>
 <body>
@@ -86,22 +88,22 @@
 
 <div id="win-screen" class="overlay">
     <h1>CASE CLOSED</h1>
-    <p id="win-msg">The truth has been brought to light.</p>
-    <button class="btn" style="background:var(--gold); color:black;" onclick="closeOverlay('win-screen')">RETURN TO LOG</button>
+    <p id="win-msg">The truth is revealed.</p>
+    <button class="btn" style="background:var(--gold); color:black; width:180px;" onclick="closeOverlay('win-screen')">RETURN</button>
 </div>
 
 <div id="kill-screen" class="overlay">
     <div class="blood-drip">🩸</div>
     <h1>YOU'RE NEXT</h1>
-    <p id="kill-msg">A false accusation was your final mistake.</p>
-    <button class="btn" style="background:#222; color:red; border:1px solid red;" onclick="closeOverlay('kill-screen')">TRY AGAIN</button>
+    <p id="kill-msg">You guessed wrong.</p>
+    <button class="btn" style="background:#222; color:red; border:1px solid red; width:180px;" onclick="closeOverlay('kill-screen')">TRY AGAIN</button>
 </div>
 
 <div class="controls" style="max-width: 900px; margin: auto; position: relative; z-index: 10;">
     <div class="secret-header">
-        <strong style="color:var(--gold)">INVESTIGATOR HUD</strong>
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 0.65em; letter-spacing: 1px;">STEALTH MODE</span>
+        <strong style="color:var(--gold)">DETECTIVE LOG</strong>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.6em; letter-spacing: 1px;">STEALTH</span>
             <label class="switch">
                 <input type="checkbox" id="secret-toggle" onchange="toggleSecret(this.checked)">
                 <span class="slider"></span>
@@ -109,14 +111,14 @@
         </div>
     </div>
     
-    <div style="display: flex; align-items: center; gap: 10px; margin-top:10px;">
-        <span style="font-size:0.75em; color:var(--gold)">Blur:</span>
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size:0.7em; color:var(--gold)">Blur:</span>
         <input type="range" id="blur-slider" min="0" max="25" value="0" style="flex-grow:1" oninput="updateBlur(this.value)">
-        <button class="btn btn-file" onclick="document.getElementById('local-bg').click()">🖼️ BG</button>
+        <button class="btn" style="padding:8px; background:#444; color:var(--gold); border:1px solid var(--gold);" onclick="document.getElementById('local-bg').click()">🖼️</button>
         <input type="file" id="local-bg" accept="image/*" style="display:none;" onchange="uploadBg(this)">
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
         <button class="btn btn-win" onclick="triggerEnd('win')">SOLVE ✔</button>
         <button class="btn btn-lose" onclick="triggerEnd('kill')">GUESSED WRONG 💀</button>
     </div>
@@ -124,29 +126,29 @@
 
 <div class="container" id="main-content">
     <div class="setup">
-        <input type="text" id="p1" placeholder="P1" oninput="syncNames()">
-        <input type="text" id="p2" placeholder="P2" oninput="syncNames()">
-        <input type="text" id="p3" placeholder="P3" oninput="syncNames()">
-        <input type="text" id="p4" placeholder="P4" oninput="syncNames()">
-        <input type="text" id="p5" placeholder="P5" oninput="syncNames()">
-        <input type="text" id="p6" placeholder="P6" oninput="syncNames()">
+        <input type="text" id="p1" placeholder="P1" maxlength="3" oninput="syncNames()">
+        <input type="text" id="p2" placeholder="P2" maxlength="3" oninput="syncNames()">
+        <input type="text" id="p3" placeholder="P3" maxlength="3" oninput="syncNames()">
+        <input type="text" id="p4" placeholder="P4" maxlength="3" oninput="syncNames()">
+        <input type="text" id="p5" placeholder="P5" maxlength="3" oninput="syncNames()">
+        <input type="text" id="p6" placeholder="P6" maxlength="3" oninput="syncNames()">
     </div>
 
     <div id="sheet">
         <div class="section-header">WHO</div>
-        <table id="table-who"><thead><tr><th class="name-col">Identity</th><th class="h-p1">P1</th><th class="h-p2">P2</th><th class="h-p3">P3</th><th class="h-p4">P4</th><th class="h-p5">P5</th><th class="h-p6">P6</th><th>File</th></tr></thead><tbody id="body-who"></tbody></table>
+        <table id="table-who"><thead><tr><th class="name-col">IDENTITY</th><th class="h-p1 player-col">P1</th><th class="h-p2 player-col">P2</th><th class="h-p3 player-col">P3</th><th class="h-p4 player-col">P4</th><th class="h-p5 player-col">P5</th><th class="h-p6 player-col">P6</th><th class="file-col">FILE</th></tr></thead><tbody id="body-who"></tbody></table>
         <div class="section-header">WHAT</div>
         <table id="table-what"><tbody id="body-what"></tbody></table>
         <div class="section-header">WHERE</div>
         <table id="table-where"><tbody id="body-where"></tbody></table>
     </div>
 
-    <textarea id="turn-history" placeholder="Turn History & Notes..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
-    <button class="btn" style="width:100%; background:#333; color:#777; margin-top:15px; border:1px solid #444;" onclick="if(confirm('Wipe everything?')) { localStorage.clear(); location.reload(); }">NEW GAME</button>
+    <textarea id="turn-history" placeholder="Turn History..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
+    <button class="btn" style="width:100%; background:#222; color:#555; margin-top:10px; border:1px solid #333;" onclick="if(confirm('Wipe everything?')) { localStorage.clear(); location.reload(); }">NEW GAME</button>
 
     <footer>
-        <p>CLUEDO DIGITAL TRACKER (DR. ORCHID EDITION)</p>
-        <p>© 2026 | VERSION 2.7.5 | MIT LICENSE</p>
+        <p>CLUEDO DIGITAL TRACKER (v2.8.0)</p>
+        <p>© 2026 | MIT LICENSE</p>
     </footer>
 </div>
 
@@ -157,19 +159,8 @@
         where: ["Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"]
     };
 
-    const winMsgs = [
-        "Brilliant deduction! The killer has been apprehended.",
-        "The truth has been brought to light. Tudor Mansion is safe...",
-        "Case closed. You've outsmarted the mansion's guests.",
-        "Justice is served. Another mystery solved."
-    ];
-
-    const killMsgs = [
-        "A false accusation was your final mistake.",
-        "The killer remains at large. You are next.",
-        "Silence is the only witness left.",
-        "Wrong guesses can be... fatal."
-    ];
+    const winMsgs = ["Brilliant deduction!", "The truth is revealed.", "Case closed.", "Justice is served."];
+    const killMsgs = ["A fatal mistake.", "You are next.", "Silence follows you.", "Wrong guess."];
 
     function triggerEnd(type) {
         if(type === 'win') {
@@ -207,7 +198,7 @@
 
     function syncNames() {
         for(let i=1; i<=6; i++) {
-            const name = document.getElementById(`p${i}`).value;
+            const name = document.getElementById(`p${i}`).value.toUpperCase();
             document.querySelectorAll(`.h-p${i}`).forEach(el => el.innerText = name || `P${i}`);
             localStorage.setItem(`p${i}name`, name);
         }
