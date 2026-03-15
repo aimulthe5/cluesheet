@@ -21,73 +21,63 @@
         }
 
         .container { max-width: 900px; margin: auto; transition: filter 0.4s ease, opacity 0.4s ease; }
-        
-        /* Secret Mode Blur State */
         .secret-blur { filter: blur(50px) grayscale(1) !important; opacity: 0 !important; pointer-events: none !important; }
 
-        .controls { 
-            background: var(--glass); padding: 15px; border-radius: 10px; 
-            margin-bottom: 15px; border: 1px solid var(--gold);
-        }
-
-        /* TOGGLE SWITCH STYLING */
+        /* Controls */
+        .controls { background: var(--glass); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--gold); }
         .secret-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        
+        /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333; transition: .4s; border-radius: 24px; border: 1px solid var(--gold);
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px;
-            background-color: var(--gold); transition: .4s; border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 24px; border: 1px solid var(--gold); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 3px; background-color: var(--gold); transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--blood); }
         input:checked + .slider:before { transform: translateX(24px); background-color: #fff; }
 
-        .control-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; font-size: 0.85em; }
-        input[type="text"], input[type="file"] { background: rgba(255,255,255,0.1); border: 1px solid #555; color: white; padding: 5px; border-radius: 4px; }
-        
+        /* Inputs & Buttons */
+        input[type="text"], input[type="file"] { background: rgba(255,255,255,0.1); border: 1px solid #555; color: white; padding: 8px; border-radius: 4px; }
         .setup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 15px; }
         .setup input { background: var(--glass); border: 1px solid #444; color: white; padding: 8px; text-align: center; border-radius: 4px; font-size: 0.8em; }
 
-        table { 
-            width: 100%; border-collapse: collapse; margin-bottom: 25px; 
-            background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; 
-        }
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; background: var(--glass); backdrop-filter: blur(5px); border: 1px solid #444; }
         th, td { border: 1px solid rgba(255,255,255,0.1); padding: 12px 2px; text-align: center; }
         .name-col { width: 32%; text-align: left; padding-left: 12px; font-weight: bold; color: var(--gold); font-size: 0.9em; }
         .cell { cursor: pointer; user-select: none; font-weight: bold; font-size: 1.2em; }
-        
         .state-x { color: #ff4d4d; }
         .state-maybe { color: var(--gold); }
         .state-check { color: #00ff88; }
 
-        .section-header { 
-            background: rgba(139, 0, 0, 0.9); color: var(--gold); 
-            padding: 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold);
-        }
-
-        .action-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .section-header { background: rgba(139, 0, 0, 0.9); color: var(--gold); padding: 10px; font-weight: bold; text-transform: uppercase; border: 1px solid var(--gold); }
         .btn { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.8em; }
         .btn-win { background: #28a745; color: white; border: 2px solid #00ff88; }
         .btn-lose { background: var(--blood); color: white; border: 2px solid #ff4d4d; }
         .btn-file { background: #444; color: var(--gold); border: 1px solid var(--gold); }
         
-        textarea { width: 100%; height: 80px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; font-family: sans-serif; resize: none; }
-
+        textarea { width: 100%; height: 80px; background: var(--glass); color: #ccc; border: 1px solid #444; padding: 10px; box-sizing: border-box; border-radius: 5px; resize: none; }
         footer { text-align: center; padding: 30px; color: #666; font-size: 0.75em; letter-spacing: 1px; }
 
-        /* Overlays */
+        /* MOBILE OPTIMIZED OVERLAYS */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 100; text-align: center; background: black;
+            z-index: 1000; text-align: center; padding: 20px; box-sizing: border-box;
+            backdrop-filter: blur(10px);
         }
-        #win-screen { border: 10px double var(--gold); }
-        #kill-screen h1 { color: #ff0000; font-size: 4em; font-family: 'Courier New', monospace; }
-        .blood-drip { color: #ff0000; font-size: 2em; animation: drip 2s infinite; }
-        @keyframes drip { 0% { transform: translateY(-20px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(100px); opacity: 0; } }
+
+        #win-screen { background: radial-gradient(circle, #1a1a1a 0%, #000 100%); border: 8px double var(--gold); }
+        #win-screen h1 { color: var(--gold); font-size: clamp(2rem, 10vw, 4rem); margin: 10px 0; text-shadow: 0 0 20px var(--gold); animation: shimmer 2s infinite; }
+        
+        #kill-screen { background: #000; }
+        #kill-screen h1 { color: #ff0000; font-size: clamp(2rem, 10vw, 4rem); font-family: 'Courier New', monospace; letter-spacing: -2px; animation: shake 0.5s infinite; }
+        
+        .overlay p { color: #ccc; font-size: clamp(0.9rem, 4vw, 1.3rem); max-width: 85%; margin-bottom: 30px; line-height: 1.4; }
+
+        @keyframes shimmer { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; transform: scale(1.02); } }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, 1px); } }
+        @keyframes drip { 0% { transform: translateY(-20px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(60vh); opacity: 0; } }
+        .blood-drip { color: #ff0000; font-size: 3rem; animation: drip 2.5s infinite; position: absolute; top: 5%; }
     </style>
 </head>
 <body>
@@ -95,21 +85,23 @@
 <div id="bg-layer"></div>
 
 <div id="win-screen" class="overlay">
-    <h1 style="color:var(--gold); font-size:3em;">CASE CLOSED</h1>
-    <button class="btn" style="background:var(--gold);" onclick="closeOverlay('win-screen')">Return</button>
+    <h1>CASE CLOSED</h1>
+    <p id="win-msg">The truth has been brought to light.</p>
+    <button class="btn" style="background:var(--gold); color:black; width: 220px;" onclick="closeOverlay('win-screen')">BACK TO BOARD</button>
 </div>
 
 <div id="kill-screen" class="overlay">
     <div class="blood-drip">🩸</div>
     <h1>YOU'RE NEXT</h1>
-    <button class="btn" style="background:#222; color:red; border:1px solid red;" onclick="closeOverlay('kill-screen')">Return</button>
+    <p id="kill-msg">A false accusation was your final mistake.</p>
+    <button class="btn" style="background:#222; color:red; border:1px solid red; width: 220px;" onclick="closeOverlay('kill-screen')">RESURRECT</button>
 </div>
 
 <div class="controls" style="max-width: 900px; margin: auto; position: relative; z-index: 10;">
     <div class="secret-header">
         <strong style="color:var(--gold)">INVESTIGATOR HUD</strong>
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 0.7em; letter-spacing: 1px;">SECRET MODE</span>
+            <span style="font-size: 0.65em; letter-spacing: 1px;">STEALTH MODE</span>
             <label class="switch">
                 <input type="checkbox" id="secret-toggle" onchange="toggleSecret(this.checked)">
                 <span class="slider"></span>
@@ -117,16 +109,16 @@
         </div>
     </div>
     
-    <div class="control-row">
-        <label>Atmosphere (Blur):</label>
-        <input type="range" id="blur-slider" min="0" max="25" value="0" oninput="updateBlur(this.value)">
+    <div style="display: flex; align-items: center; gap: 10px; margin-top:10px;">
+        <span style="font-size:0.75em; color:var(--gold)">Blur:</span>
+        <input type="range" id="blur-slider" min="0" max="25" value="0" style="flex-grow:1" oninput="updateBlur(this.value)">
+        <button class="btn btn-file" onclick="document.getElementById('local-bg').click()">🖼️ BG</button>
         <input type="file" id="local-bg" accept="image/*" style="display:none;" onchange="uploadBg(this)">
-        <button class="btn btn-file" onclick="document.getElementById('local-bg').click()">Browse Local BG</button>
     </div>
 
-    <div class="action-bar">
-        <button class="btn btn-win" onclick="showOverlay('win-screen')">SOLVE ✔</button>
-        <button class="btn btn-lose" onclick="showOverlay('kill-screen')">ELIMINATED 💀</button>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+        <button class="btn btn-win" onclick="triggerEnd('win')">SOLVE ✔</button>
+        <button class="btn btn-lose" onclick="triggerEnd('kill')">GUESSED WRONG 💀</button>
     </div>
 </div>
 
@@ -149,14 +141,12 @@
         <table id="table-where"><tbody id="body-where"></tbody></table>
     </div>
 
-    <div class="section-header" style="font-size:0.7em;">TURN HISTORY / NOTES</div>
-    <textarea id="turn-history" placeholder="Turn 1: Scarlett showed Green a card in the Kitchen..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
-
-    <button class="btn" style="width:100%; background:#444; color:white; margin-top:15px;" onclick="if(confirm('Wipe everything?')) { localStorage.clear(); location.reload(); }">NEW GAME (RESET)</button>
+    <textarea id="turn-history" placeholder="Turn History & Notes..." oninput="localStorage.setItem('turnHistory', this.value)"></textarea>
+    <button class="btn" style="width:100%; background:#333; color:#777; margin-top:15px; border:1px solid #444;" onclick="if(confirm('Reset everything?')) { localStorage.clear(); location.reload(); }">NEW GAME</button>
 
     <footer>
         <p>CLUEDO DIGITAL TRACKER (DR. ORCHID EDITION)</p>
-        <p>© 2026 | VERSION 2.6.0 | MIT LICENSE</p>
+        <p>© 2026 | VERSION 2.7.0 | MIT LICENSE</p>
     </footer>
 </div>
 
@@ -167,16 +157,38 @@
         where: ["Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"]
     };
 
-    function showOverlay(id) { document.getElementById(id).style.display = 'flex'; }
+    const winMsgs = [
+        "Brilliant deduction! The killer has been apprehended.",
+        "The truth has been brought to light. Tudor Mansion is safe... for now.",
+        "Case closed. You've outsmarted the mansion's deadliest guest.",
+        "Justice is served. Another mystery solved by the master detective."
+    ];
+
+    const killMsgs = [
+        "A false accusation was your final mistake. The shadows close in...",
+        "The killer remains at large, and you've become their next target.",
+        "Silence is the only witness left. You've been eliminated.",
+        "In the game of Cluedo, wrong guesses can be... fatal."
+    ];
+
+    function triggerEnd(type) {
+        if(type === 'win') {
+            document.getElementById('win-msg').innerText = winMsgs[Math.floor(Math.random() * winMsgs.length)];
+            document.getElementById('win-screen').style.display = 'flex';
+        } else {
+            document.getElementById('kill-msg').innerText = killMsgs[Math.floor(Math.random() * killMsgs.length)];
+            document.getElementById('kill-screen').style.display = 'flex';
+        }
+    }
+
     function closeOverlay(id) { document.getElementById(id).style.display = 'none'; }
 
     function uploadBg(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const img = e.target.result;
-                document.getElementById('bg-layer').style.backgroundImage = `url('${img}')`;
-                try { localStorage.setItem('customBg', img); } catch(e) { alert("File too large!"); }
+                document.getElementById('bg-layer').style.backgroundImage = `url('${e.target.result}')`;
+                try { localStorage.setItem('customBg', e.target.result); } catch(e) { alert("File too large!"); }
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -228,22 +240,17 @@
         localStorage.setItem(el.id, states[nextIdx]);
     }
 
-    // Init
     buildRows(data.who, 'body-who');
     buildRows(data.what, 'body-what');
     buildRows(data.where, 'body-where');
 
     const savedBg = localStorage.getItem('customBg');
     if(savedBg) document.getElementById('bg-layer').style.backgroundImage = `url('${savedBg}')`;
-
     const savedBlur = localStorage.getItem('bgBlur') || 0;
     document.getElementById('blur-slider').value = savedBlur;
     updateBlur(savedBlur);
-
     const savedNotes = localStorage.getItem('turnHistory');
     if(savedNotes) document.getElementById('turn-history').value = savedNotes;
-
-    // Secret Mode Persistence
     const secretOn = localStorage.getItem('secretMode') === 'true';
     document.getElementById('secret-toggle').checked = secretOn;
     toggleSecret(secretOn);
