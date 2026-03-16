@@ -154,7 +154,7 @@
         inputArea.innerHTML += `<div style="background:rgba(255,255,255,0.05); border-left:1px solid #333;"></div>`;
 
         ['who', 'what', 'where'].forEach(cat => {
-            let html = `<div class="section-hdr">${cat}</div><table id="t-${cat}"><thead><tr><th class="name-col">IDENTITY</th>`;
+            let html = `<div class="section-hdr">${cat}</div><table id="t-${cat}"><thead><tr><th class="name-col"> </th>`;
             for(let i=1; i<=6; i++) html += `<th class="h-p${i}" style="width:10%; font-size:0.55rem; color:#888;">P${i}</th>`;
             html += `<th style="width:10%; color:#444; font-size:0.55rem;">FILE</th></tr></thead><tbody>`;
             
